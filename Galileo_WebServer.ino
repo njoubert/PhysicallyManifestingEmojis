@@ -42,13 +42,14 @@ int DIR1 = 2;
 int STEP1 = 3;
 int STEPS_PER_REV = 400;
 
-// State variables
+// State variables4
 int doRotation = 0;
 int doStep = 0;
 int doPos = 0;
 
 unsigned long emojiFiredAt = 0;
 unsigned long EMOJI_LAG = 1600;
+bool ROTATE_BACK = false;
 
 int currPosInSteps = 0;
 
@@ -236,7 +237,9 @@ void handleSteppers() {
     Serial.println(currPosInSteps);
     Serial.println("Steps difference");
     Serial.println(i);
-          
+    if (i == 0) { //If we hit the same once twice, we'll just do a full rotation
+      i = STEPS_PER_REV;
+    }
     doPos = -1;
     
   } else {
@@ -284,7 +287,7 @@ void handleState() {
   }
 }
 void loop() {
-  handleState();
+  //handleState();
   handleHTTP();
   handleSteppers();
   
