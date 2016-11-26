@@ -24,12 +24,18 @@
 // The IP address will be dependent on your local network:
 byte mac[] = { 
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress ip(192,168,0,177);
+IPAddress ip(192,168,0,50);
+// the dns server ip
+IPAddress dnServer(192, 168, 0, 1);
+// the router's gateway address:
+IPAddress gateway(192, 168, 0, 1);
+// the subnet:
+IPAddress subnet(255, 255, 255, 0);
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
 // (port 80 is default for HTTP):
-EthernetServer server(80);
+EthernetServer server(27540);
 
 // We set up our steppers
 int DIR1 = 2;
@@ -41,6 +47,9 @@ int doRotation = 0;
 int doStep = 0;
 int doPos = 0;
 
+unsigned long emojiFiredAt = 0;
+unsigned long EMOJI_LAG = 1600;
+
 int currPosInSteps = 0;
 
 void setup() {
@@ -49,13 +58,22 @@ void setup() {
    while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
+
+  
   
   // start the Ethernet connection and the server:
-  Ethernet.begin(mac, ip);
+  Ethernet.begin(mac, ip, dnServer, gateway, subnet);
   server.begin();
-  Serial.print("server is at ");
-  Serial.println(Ethernet.localIP());
 
+  Serial.print("IP:      ");
+  Serial.println(Ethernet.localIP());
+  Serial.print("Subnet:  ");
+  Serial.println(Ethernet.subnetMask());
+  Serial.print("Gateway: ");
+  Serial.println(Ethernet.gatewayIP());
+  Serial.print("DNS:     ");
+  Serial.println(Ethernet.dnsServerIP());
+    
   //setup stepper
   pinMode(DIR1, OUTPUT);
   pinMode(STEP1, OUTPUT);
@@ -67,7 +85,7 @@ void setup() {
 void sendHTTPHeader(EthernetClient client) {
   // send a standard http response header
   client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
+  client.println("Content-Type: text/html; charset=utf-8");
   client.println("Connection: close");
   client.println();  
 }
@@ -99,6 +117,14 @@ void handlePos(EthernetClient client, String arguments) {
   Serial.println(arguments);
   int pos = arguments.toInt();
   doPos = pos;
+  sendBlankPage(client);
+}
+
+void handleEmoji(EthernetClient client, String arguments) {
+  Serial.println(arguments);
+  int emoji = arguments.toInt();
+  doPos = (emoji - 1) * 45;
+  emojiFiredAt = millis();
   sendBlankPage(client);
 }
 
@@ -184,8 +210,10 @@ void handleHTTP() {
       } else if (command.startsWith("step?")) {
         String arguments = command.substring(5);
         handleStep(client, arguments);
+      } else if (command.startsWith("emoji?")) {
+        String arguments = command.substring(6);
+        handleEmoji(client, arguments);
       }
-
     }
     delay(1);
     // close the connection:
@@ -245,8 +273,20 @@ void handleSteppers() {
 
 }
 
+void handleState() {
+  if (emojiFiredAt > 0) {
+    if (millis() - emojiFiredAt > EMOJI_LAG) {
+      emojiFiredAt = 0;
+      doPos = 0;
+    } else {
+      
+    }
+  }
+}
 void loop() {
+  handleState();
   handleHTTP();
   handleSteppers();
+  
 }
 

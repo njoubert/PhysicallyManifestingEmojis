@@ -1,13 +1,22 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<meta name='viewport' content='width=device-width, minimum-scale=1.0, maximum-scale=1.0' />
 <style>
 
 #emojiSender a:link {
 	text-decoration: none;
 }
 
+#emojiSender a:active {
+	font-size: 70pt;
+}
+
+
 #emojiSender {
+	text-align: 
+	padding-top: 20px;
 	margin: 20px;
 	font-size: 64pt;
 
@@ -42,24 +51,27 @@ var emoji = function(number) {
 	xhr.send();
 };
 </script>
+<center>
+
 <H1>Top Secret Foxhole Control Panel</H1>
 
-Click an emoji! It will physically manifest in Niels' room!
+Click an emoji to manifest it inside The Foxhole
 
-<div id="emojiSender">
-<a href="javascript:emoji(1);">😀</a>
-<a href="javascript:emoji(2);">😂</a>
-<a href="javascript:emoji(3);">😜</a>
-<a href="javascript:emoji(4);">😘</a>
-<a href="javascript:emoji(5);">❤️</a>
-<a href="javascript:emoji(6);">😈</a>
-<a href="javascript:emoji(7);">😇</a>
-<a href="javascript:emoji(8);">😻</a>
+<div id='emojiSender'>
+<!-- <a href='javascript:emoji(1);'>😀</a> -->
+<a href='javascript:emoji(2);'>😂</a>
+<a href='javascript:emoji(3);'>😜</a>
+<a href='javascript:emoji(4);'>😘</a>
+<a href='javascript:emoji(5);'>❤️</a>
+<a href='javascript:emoji(6);'>😈</a>
+<a href='javascript:emoji(7);'>😇</a>
+<a href='javascript:emoji(8);'>😻</a>
 </div>
 
+</center>
 
 <hr>
-<h3>Ultra Top Secret Configuration Panel</h3>
+<!-- <h3>Ultra Top Secret Configuration Panel</h3>
 <p>Rotate me <a href='javascript:rotate(1);'>once!</a></p>
 
 <p>Step me <a href='javascript:step(1);'>once!</a></p>
@@ -74,5 +86,5 @@ window.onload = function() {
 		pos(getRange());
 	})
 }
-</script>
+</script> -->
 </body></html>
