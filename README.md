@@ -1,7 +1,16 @@
-# Internet-connected Stepper Motor through Intel Galileo
+# Physically Manifesting Emojis!
 
-This project exposes a stepper motor to the internet.
-It is self-contained on the Intel Galileo, it does not require an additional computer.
+Technically, this project is an Internet-connected Stepper Motor built on the Intel Galileo platform. 
+
+Experientially, it's a fucking MAGIC-MACHINE that BLASTS EMOJIS INTO YOUR ROOM from ANYWHERE IN THE WORLD.
+
+Realistically, it's a 
+
+## Architecture
+
+The Intel Galileo listens for Ethernet packets. A down-and-dirty hand-written HTTP parser extracts just enough info to figure out what to do. Either a webpage (stored in a C string, ha) gets piped back, or, some new action for a stepper motor is calculated. Stepper motor commands are then executed. 
+
+I should have just said "this is a giant, fun, hack."
 
 ## Developing
 
