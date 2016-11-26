@@ -41,6 +41,8 @@ int doRotation = 0;
 int doStep = 0;
 int doPos = 0;
 
+int currPosInSteps = 0;
+
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
@@ -62,36 +64,21 @@ void setup() {
 
 }
 
-void sendMainPage(EthernetClient client) {
-   // send a standard http response header
+void sendHTTPHeader(EthernetClient client) {
+  // send a standard http response header
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
   client.println("Connection: close");
-  client.println();
-//  client.println("<!DOCTYPE HTML>");
-//  client.println("<html>");
-//  // add a meta refresh tag, so the browser pulls again every 5 seconds:
-//  client.println("<meta http-equiv=\"refresh\" content=\"5\">");
-//  // output the value of each analog input pin
-//  for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
-//    int sensorReading = analogRead(analogChannel);
-//    client.print("analog input ");
-//    client.print(analogChannel);
-//    client.print(" is ");
-//    client.print(sensorReading);
-//    client.println("<br />");       
-//  }
-//  client.println("</html>");
+  client.println();  
+}
 
-client.write(mainpage_html);
+void sendMainPage(EthernetClient client) {
+   sendHTTPHeader(client);
+   client.write(index_html);
 }
 
 void sendBlankPage(EthernetClient client) {
-   // send a standard http response header
-  client.println("HTTP/1.1 200 OK");
-  client.println("Content-Type: text/html");
-  client.println("Connection: close");
-  client.println();
+   sendHTTPHeader(client);
 }
 
 void handleRot(EthernetClient client, String arguments) {
@@ -209,17 +196,52 @@ void handleHTTP() {
 }
 
 void handleSteppers() {
-    int i = STEPS_PER_REV * doRotation + doStep;
+
+  int i = 0;
+  int dir = 1;
+  if (doPos > -1) {
+    int newPosInSteps = (int) ((float) doPos / 360.0 * STEPS_PER_REV);
+    i = newPosInSteps - currPosInSteps; //positive means bigger
+    Serial.println("Going to position");
+    Serial.println(doPos);
+    Serial.println("Old position");
+    Serial.println(currPosInSteps);
+    Serial.println("Steps difference");
+    Serial.println(i);
+          
+    doPos = -1;
+    
+  } else {
+    
+    i = STEPS_PER_REV * doRotation + doStep;
     doRotation = 0;
     doStep = 0;
-
+    
+  }
+  
+  if (i != 0) {  
+    Serial.print("Moving stepper! Current position is ");
+    Serial.print(currPosInSteps);
+    
+    if (i < 0) {
+      i *= -1;
+      dir = -1;
+      digitalWrite(DIR1, LOW);
+    } else {
+      dir = 1;
+      digitalWrite(DIR1, HIGH);
+    }
     while (i > 0) {
       digitalWrite(STEP1, HIGH);
       delayMicroseconds(100);
       digitalWrite(STEP1, LOW);
       delayMicroseconds(100);
       i--;
+      currPosInSteps = (currPosInSteps + dir) % STEPS_PER_REV;
     }
+    Serial.print(", new position is ");
+    Serial.println(currPosInSteps);    
+  }
 
 }
 

@@ -1,8 +1,8 @@
 
 
-with open("rotateme.html") as f:
-	with open("webpage.h", 'w') as o:
-		o.write("char* mainpage = \"")
+with open("webpage.h", 'w') as o:
+	with open("index.html") as f:
+		o.write("char* index_html = ")
 		for l in f:
-			o.write("%s" % l[:-1])
-		o.write("\"")
+			o.write("\"%s\\n\"\n" % l[:-1])
+		o.write("\"\";")

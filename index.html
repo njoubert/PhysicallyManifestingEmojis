@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+
+#emojiSender a:link {
+	text-decoration: none;
+}
+
+#emojiSender {
+	margin: 20px;
+	font-size: 64pt;
+
+}
+</style>
+</head>
+<body>
+<script>
+var getRange = function() {
+	var x = document.getElementById('stepperRange').value;
+    document.getElementById('demo').innerHTML = x;
+    return x;
+}
+var rotate = function(times) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'rot?' + times);
+	xhr.send();
+};
+var step = function(steps) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'step?' + steps);
+	xhr.send();
+};
+var pos = function(angle) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'pos?' + angle);
+	xhr.send();
+};
+var emoji = function(number) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'emoji?' + number);
+	xhr.send();
+};
+</script>
+<H1>Top Secret Foxhole Control Panel</H1>
+
+Click an emoji! It will physically manifest in Niels' room!
+
+<div id="emojiSender">
+<a href="javascript:emoji(1);">😀</a>
+<a href="javascript:emoji(2);">😂</a>
+<a href="javascript:emoji(3);">😜</a>
+<a href="javascript:emoji(4);">😘</a>
+<a href="javascript:emoji(5);">❤️</a>
+<a href="javascript:emoji(6);">😈</a>
+<a href="javascript:emoji(7);">😇</a>
+<a href="javascript:emoji(8);">😻</a>
+</div>
+
+
+<hr>
+<h3>Ultra Top Secret Configuration Panel</h3>
+<p>Rotate me <a href='javascript:rotate(1);'>once!</a></p>
+
+<p>Step me <a href='javascript:step(1);'>once!</a></p>
+
+<p><input id='stepperRange' type='range' min=0 max=360 step=1 value=0/></p>
+
+<p><div id='demo'></div></p>
+
+<script>
+window.onload = function() {
+	document.getElementById('stepperRange').addEventListener('change', function() {
+		pos(getRange());
+	})
+}
+</script>
+</body></html>
